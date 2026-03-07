@@ -2,8 +2,6 @@
  * Copyright (c) 2015 SUN XIMENG (Nathaniel). All rights reserved.
  */
 
-package io.bretty.solver.normalization;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,9 +12,9 @@ import java.util.Set;
  */
 
 public final class Attribute {
-	
+
 	protected static final int AVERAGE_LENGTH = 10;
-	
+
 	/**
 	 * Get a set of attributes with one single method
 	 * @param names a formatted {@code String} as in the following example: "username, password, favApp, lastLogin" (white spaces are optional)
@@ -29,7 +27,7 @@ public final class Attribute {
 		names = names.replaceAll("\\s+","");
 		return getSet(names.split(","));
 	}
-	
+
 	/**
 	 * Get a set of attributes with one single method
 	 * @param names a String array in which each element will be used to create an {@code Attribute}
@@ -42,7 +40,7 @@ public final class Attribute {
 		}
 		return attrs;
 	}
-	
+
 	/**
 	 * A way to create an {@code Attribute} object without calling the constructor
 	 * @param name the name of the attribute as a unique identifier
@@ -51,9 +49,9 @@ public final class Attribute {
 	public static Attribute of(String name){
 		return new Attribute(name);
 	}
-	
+
 	private final String name;
-	
+
 	/**
 	 * The default constructor
 	 * @param name the name of the attribute, as a unique identifier
@@ -61,7 +59,7 @@ public final class Attribute {
 	public Attribute(String name){
 		this.name = name;
 	}
-	
+
 	/**
 	 * An {@code object} will equal to another if and only if they have the same {@code name} (case sensitive)
 	 */
@@ -76,20 +74,20 @@ public final class Attribute {
 		Attribute a = (Attribute)o;
 		return a.name.equals(this.name);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return the name of the attribute
 	 */
 	public String getName(){
 		return this.name;
 	}
-	
+
 	@Override
 	public int hashCode(){
 		return this.name.hashCode();
 	}
-	
+
 	@Override
 	public String toString(){
 		return this.name;

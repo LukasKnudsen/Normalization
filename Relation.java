@@ -2,8 +2,6 @@
  * Copyright (c) 2015 SUN XIMENG (Nathaniel). All rights reserved.
  */
 
-package io.bretty.solver.normalization;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +11,7 @@ import java.util.Set;
  *
  */
 public final class Relation {
-	
+
 	private final Set<Attribute> attrs;
 	private final Set<FuncDep> fds;
 
@@ -26,7 +24,7 @@ public final class Relation {
 		this.attrs = new HashSet<>(attrs);
 		this.fds = new HashSet<>(fds);
 	}
-	
+
 	/**
 	 * Quickly construct a {@code Relation} object with two formatted strings, one for attributes and another for FD's
 	 * @param names a string formatted as the following example: "name, application, date, gender"
@@ -36,7 +34,7 @@ public final class Relation {
 		this.attrs = Attribute.getSet(names);
 		this.fds = FuncDep.getSet(exprs);
 	}
-	
+
 	/**
 	 * Quickly construct a {@code Relation} object with two string arrays
 	 * @param names each element will be used as the {@code name} of an {@code Attribute} object
@@ -48,7 +46,7 @@ public final class Relation {
 	}
 
 	/**
-	 * Decompose the current relation into a set of relations that satisfy 3NF, 
+	 * Decompose the current relation into a set of relations that satisfy 3NF,
 	 * by using the Lossless Join &amp; Dependency Preservation algorithm
 	 * @return a set of decomposed relations
 	 */
@@ -94,22 +92,22 @@ public final class Relation {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Decompose the current relation into a set of relations that satisfies BCNF, 
+	 * Decompose the current relation into a set of relations that satisfies BCNF,
 	 * regardless the possible loss of FD's
 	 * @return a set of decomposed relations
 	 */
 	public Set<Relation> decomposeToBCNF(){
 		Set<Relation> result = new HashSet<>();
-		
+
 		//check if it's already in BCNF
 		Set<FuncDep> violating = this.getFdsViolatingBCNF();
 		if(violating.isEmpty()){
 			result.add(this);
 			return result;
 		}
-		
+
 		//if not, pick a violating FD to decompose
 		FuncDep pick = null;
 		for(FuncDep fd : violating){
@@ -123,32 +121,21 @@ public final class Relation {
 		attrs2.addAll(lefts);
 		Set<FuncDep> fds1 = Algos.projection(attrs1, this.fds);
 		Set<FuncDep> fds2 = Algos.projection(attrs2, this.fds);
-		
-		//check if FDs are preserved
-		/*Set<FuncDep> fdsSep = new HashSet<FuncDep>();
-		fdsSep.addAll(fds1);
-		fdsSep.addAll(fds2);
-		for(FuncDep fd : this.fds){
-			if(!Algos.closure(fd.getLeft(), fdsSep).containsAll(fd.getRight())){
-				result.add(this);
-				return result;
-			}
-		}*/
-				
+
 		//create two new relations
 		Relation r1 = new Relation(attrs1, fds1);
 		Relation r2 = new Relation(attrs2, fds2);
-		
+
 		//recursively decompose
 		result.addAll(r1.decomposeToBCNF());
 		result.addAll(r2.decomposeToBCNF());
-		
+
 		return result;
-		
+
 	}
-	
+
 	/**
-	 * A {@code Relation} object will equal to another if and only if: 1) they have exactly the same 
+	 * A {@code Relation} object will equal to another if and only if: 1) they have exactly the same
 	 * set of attributes; 2) they have exactly the same set of FD's
 	 */
 	@Override
@@ -162,39 +149,39 @@ public final class Relation {
 		Relation r = (Relation)o;
 		return r.attrs.equals(this.attrs) && r.fds.equals(this.fds);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return a set of {@code Attribute} objects that appear in this relations
 	 */
 	public Set<Attribute> getAttrs(){
 		return new HashSet<>(this.attrs);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return all FD's that violate the 3NF; an empty set if it's already in 3NF
 	 */
 	public Set<FuncDep> getFdsViolating3NF(){
 		return Algos.check3NF(this.attrs, this.fds);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return all FD's that violate the BCNF; an empty set if it's already in BCNF
 	 */
 	public Set<FuncDep> getFdsViolatingBCNF(){
 		return Algos.checkBCNF(this.attrs, this.fds);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return a set of {@code FuncDep} objects that involved in this relation
 	 */
 	public Set<FuncDep> getFds(){
 		return new HashSet<>(this.fds);
 	}
-	
+
 	/**
 	 * Compute all the candidate keys in this relation
 	 * @return a set of candidate keys, and each itself is a set of attributes
@@ -202,7 +189,7 @@ public final class Relation {
 	public Set<Set<Attribute>> getKeys(){
 		return Algos.keys(this.attrs, this.fds);
 	}
-	
+
 	/**
 	 * Compute all the superkeys (including candidate keys) in this relation
 	 * @return a set of superkeys, and each itself is a set of attributes
@@ -210,7 +197,7 @@ public final class Relation {
 	public Set<Set<Attribute>> getSuperkeys(){
 		return Algos.superKeys(this.attrs, this.fds);
 	}
-	
+
 	@Override
 	public int hashCode(){
 		int hash = 17;
@@ -222,23 +209,23 @@ public final class Relation {
 		}
 		return hash;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return {@code true} if this relation is already in the third normal form (3NF)
 	 */
 	public boolean is3NF(){
 		return Algos.check3NF(this.attrs, this.fds).isEmpty();
 	}
-	
+
 	/**
-	 *  
+	 *
 	 * @return {@code true} if this relation is already in Boyce-Codd normal form (BCNF)
 	 */
 	public boolean isBCNF(){
 		return Algos.checkBCNF(this.attrs, this.fds).isEmpty();
 	}
-	
+
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder(Attribute.AVERAGE_LENGTH * 50);

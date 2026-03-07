@@ -2,8 +2,6 @@
  * Copyright (c) 2015 SUN XIMENG (Nathaniel). All rights reserved.
  */
 
-package io.bretty.solver.normalization;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,8 +14,8 @@ import java.util.Set;
  */
 
 public final class FuncDep {
-	
-	
+
+
 	/**
 	 * A builder class to help construct a {@code FuncDep} object
 	 * @author SUN XIMENG (Nathaniel)
@@ -26,7 +24,7 @@ public final class FuncDep {
 	public static class Builder{
 		private Set<Attribute> left;
 		private Set<Attribute> right;
-		
+
 		/**
 		 * The default constructor
 		 */
@@ -34,15 +32,15 @@ public final class FuncDep {
 			this.left = new HashSet<>();
 			this.right = new HashSet<>();
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @return a new {@code FuncDep} object
 		 */
 		public FuncDep build(){
 			return new FuncDep(this.left, this.right);
 		}
-		
+
 		/**
 		 * Add {@code Attribute} objects to the left of the FD
 		 * @param as one or more {@code Attribute} objects
@@ -52,7 +50,7 @@ public final class FuncDep {
 			this.left.addAll(Arrays.asList(as));
 			return this;
 		}
-		
+
 		/**
 		 * Add {@code Attribute} objects to the left of the FD
 		 * @param as a set of {@code Attribute} objects
@@ -62,7 +60,7 @@ public final class FuncDep {
 			this.left.addAll(as);
 			return this;
 		}
-		
+
 		/**
 		 * Add {@code Attribute} objects to the right of the FD
 		 * @param as one or more {@code Attribute} objects
@@ -72,7 +70,7 @@ public final class FuncDep {
 			this.right.addAll(Arrays.asList(as));
 			return this;
 		}
-		
+
 		/**
 		 * Add {@code Attribute} objects to the right of the FD
 		 * @param as a set of {@code Attribute} objects
@@ -82,11 +80,11 @@ public final class FuncDep {
 			this.right.addAll(as);
 			return this;
 		}
-		
+
 	}
 	/**
 	 * Get a set of {@code FuncDep} objects with only one string
-	 * @param exprs a formatted string as the following example: "a, b --&gt; c; d --&gt; e,f" (white spaces are optional)
+	 * @param exprs a formatted string as the following example: "a, b --> c; d --> e,f" (white spaces are optional)
 	 * @return a set of {@code FuncDep} objects
 	 */
 	public static Set<FuncDep> getSet(String exprs){
@@ -96,10 +94,10 @@ public final class FuncDep {
 		exprs = exprs.replaceAll("\\s+","");
 		return getSet(exprs.split(";"));
 	}
-	
+
 	/**
 	 * Get a set of {@code FuncDep} objects with only one string array
-	 * @param exprs each element in this array is formatted as the following example: "a, b --&gt; c, d"
+	 * @param exprs each element in this array is formatted as the following example: "a, b --> c, d"
 	 * @return a set of {@code FuncDep} objects
 	 */
 	public static Set<FuncDep> getSet(String[] exprs){
@@ -109,10 +107,10 @@ public final class FuncDep {
 		}
 		return fds;
 	}
-	
+
 	/**
 	 * Quickly construct a {@code FuncDep} object with a formatted string
-	 * @param expr a formatted string as the following example: "a, b --&gt; c, d"
+	 * @param expr a formatted string as the following example: "a, b --> c, d"
 	 * (white spaces are optional)
 	 * @return a {@code FuncDep} object
 	 */
@@ -120,7 +118,7 @@ public final class FuncDep {
 		String[] halves = expr.split("-->");
 		return of(halves[0], halves[1]);
 	}
-	
+
 	/**
 	 * Quickly construct a {@code FuncDep} object with two formatted string, for the left and right parts respectively
 	 * @param left a formatted string as the following example: "a, b"
@@ -141,11 +139,11 @@ public final class FuncDep {
 		}
 		return bd.build();
 	}
-	
+
 	protected final Set<Attribute> left;
-	
+
 	protected final Set<Attribute> right;
-	
+
 	/**
 	 * The default constructor
 	 * @param left a set of {@code Attribute} objects to be placed on the left of the FD
@@ -155,7 +153,7 @@ public final class FuncDep {
 		this.left = new HashSet<>(left);
 		this.right = new HashSet<>(right);
 	}
-	
+
 	/**
 	 * A {@code FuncDep} object will equal to another if and only if they have exactly the left AND right attribute sets
 	 */
@@ -170,22 +168,22 @@ public final class FuncDep {
 		FuncDep fd = (FuncDep)o;
 		return this.left.equals(fd.left) && this.right.equals(fd.right);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return the set of {@code Attribute} objects that appear in the left part of this FD
 	 */
 	public Set<Attribute> getLeft(){
 		return new HashSet<>(this.left);
 	}
-	
+
 	/**
 	 * @return the set of {@code Attribute} objects that appear in the right part of this FD
 	 */
 	public Set<Attribute> getRight(){
 		return new HashSet<>(this.right);
 	}
-	
+
 	@Override
 	public int hashCode(){
 		int result = 17;
@@ -197,7 +195,7 @@ public final class FuncDep {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder((this.left.size() + this.right.size()) * Attribute.AVERAGE_LENGTH);

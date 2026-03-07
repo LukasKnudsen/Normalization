@@ -1,10 +1,3 @@
-package io.bretty.solver.normalization;
-
-import io.bretty.solver.normalization.Algos;
-import io.bretty.solver.normalization.Attribute;
-import io.bretty.solver.normalization.FuncDep;
-import io.bretty.solver.normalization.Relation;
-
 import java.util.*;
 
 public class Main {
@@ -90,7 +83,6 @@ public class Main {
             System.out.println(r);
         }
         checkDecompositionLoss("BCNF", relation.getAttrs(), relation.getFds(), bcnf);
-
 
 
 

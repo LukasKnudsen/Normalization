@@ -2,8 +2,6 @@
  * Copyright (c) 2015 SUN XIMENG (Nathaniel). All rights reserved.
  */
 
-package io.bretty.solver.normalization;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -101,7 +99,7 @@ public class Algos {
 		for(Set<Attribute> k : keys){
 			primes.addAll(k);
 		}
-		
+
 		Set<FuncDep> violating = new HashSet<>();
 		for(FuncDep fd : fds){
 			if(!primes.containsAll(fd.getRight())){
@@ -116,11 +114,11 @@ public class Algos {
 					violating.add(fd);
 				}
 			}
-			
+
 		}
 		return violating;
 	}
-	
+
 	/**
 	 * Check if a relation is in Boyce-Codd normal form (BCNF)
 	 * @param attrs the set of attributes in a relation
@@ -144,7 +142,7 @@ public class Algos {
 		}
 		return violating;
 	}
-	
+
 	/**
 	 * Check if a certain decomposition of a relation will cause FD loss
 	 * @param attrs attributes in the original relation
@@ -167,7 +165,7 @@ public class Algos {
 		}
 		return lost;
 	}
-	
+
 	/**
 	 * Compute the closure of a set of attributes under a set of FD's
 	 * @param attrs a set of attributes
@@ -176,7 +174,7 @@ public class Algos {
 	 */
 	public static Set<Attribute> closure(Set<Attribute> attrs, Set<FuncDep> fds){
 		Set<Attribute> result = new HashSet<>(attrs);
-		
+
 		boolean found = true;
 		while(found){
 			found = false;
@@ -187,10 +185,10 @@ public class Algos {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * In-place combine the right side of the FD's that have the same left side
 	 * @param fds a set of FD's
@@ -198,7 +196,6 @@ public class Algos {
 	public static void combineRight(Set<FuncDep> fds){
 		Map<Set<Attribute>, Set<Attribute>> map = new HashMap<>();
 		for(FuncDep fd : fds){
-			//Set<Attribute> left = fd.getLeft();
 			if(map.containsKey(fd.left)){
 				map.get(fd.left).addAll(fd.right);
 			}
@@ -210,9 +207,9 @@ public class Algos {
 		for(Set<Attribute> left : map.keySet()){
 			fds.add(new FuncDep.Builder().left(left).right(map.get(left)).build());
 		}
-		
+
 	}
-	
+
 	/**
 	 * Check if two sets of FD's are equivalent to each other (i.e. each can be deduced from another)
 	 * @param a a set of FD's
@@ -229,7 +226,7 @@ public class Algos {
 			names.addAll(fd.getLeft());
 			names.addAll(fd.getRight());
 		}
-		
+
 		Set<Set<Attribute>> powerset = reducedPowerSet(names);
 		for(Set<Attribute> sa : powerset){
 			Set<Attribute> closureInA = closure(sa, a);
@@ -240,7 +237,7 @@ public class Algos {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Compute all the candidate keys
 	 * @param attrs a set of attributes
@@ -263,7 +260,7 @@ public class Algos {
 		superkeys.removeAll(toRemove);
 		return superkeys;
 	}
-	
+
 	/**
 	 * Compute the minimal basis (aka. minimal cover). Notice this method only returns ONE of the possible solutions,
 	 * depending on the order in which the attributes and FD's are stored in the memory.
@@ -271,24 +268,24 @@ public class Algos {
 	 * @return a set of FD's as the minimal basis
 	 */
 	public static Set<FuncDep> minimalBasis(Set<FuncDep> fds){
-		
+
 		Set<FuncDep> result = new HashSet<>(fds);
-		
+
 		//Step 1: split right sides
 		splitRight(result);
-		
+
 		//Step 2: remove trivial FDs
 		removeTrivial(result);
-		
+
 		//Step 3: remove unnecessary FD's and left side attributes
 		int count = 1;
 		while(count > 0){
 			count = removeUnnecessaryLeftSide(result) + removeUnnecessaryEntireFD(result);
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Generate the power set, with the empty set.
 	 * @param originalSet the original set
@@ -311,10 +308,9 @@ public class Algos {
 	    	sets.add(newSet);
 	    	sets.add(set);
 	    }
-	    //sets.remove(new HashSet<T>());
 	    return sets;
 	}
-	
+
 	/**
 	 * Project a set of FD's on a subset of attributes
 	 * @param attrs a set of attributes
@@ -337,16 +333,14 @@ public class Algos {
 		for(Set<Attribute> sa : powerset){
 			Set<Attribute> closure = closure(sa, fds);
 			closure.removeAll(notin);
-			//closure.removeAll(sa);
 			result.add(new FuncDep.Builder().left(sa).right(closure).build());
 		}
-		//return result;
 		return minimalBasis(result);
 	}
-	
-	
+
+
 	/**
-	 * Generate the power set (i.e. set of all the subsets)  of a generic set, but without the empty set.
+	 * Generate the power set (i.e. set of all the subsets) of a generic set, but without the empty set.
 	 * @param originalSet the original set
 	 * @param <T> any class
      * @return the reduced power set
@@ -356,7 +350,7 @@ public class Algos {
 		result.remove(new HashSet<T>());
 		return result;
 	}
-	
+
 	/**
 	 * Remove all trivial FD's from a set of FD's
 	 * @param fds a set of FD's
@@ -386,7 +380,7 @@ public class Algos {
 		fds.addAll(toAdd);
 		fds.removeAll(toRemove);
 	}
-	
+
 	/**
 	 * In-place remove all the unnecessary FD's, and the result is still equivalent to the original set of FD's
 	 * @param fds a set of FD's
@@ -414,15 +408,15 @@ public class Algos {
 				fds.remove(toRemove);
 			}
 		}
-		
+
 		return count;
 	}
-	
+
 	/**
-	 * In-place remove all the unnecessary attributes on the left side of each FD, 
-	 * and the result is still equivalent to the original set of FD's  
-	 * @param fds a set of FD's 
-	 * @return the total number of attributes removed 
+	 * In-place remove all the unnecessary attributes on the left side of each FD,
+	 * and the result is still equivalent to the original set of FD's
+	 * @param fds a set of FD's
+	 * @return the total number of attributes removed
 	 */
 	public static int removeUnnecessaryLeftSide(Set<FuncDep> fds){
 		int count = 0;
@@ -450,7 +444,7 @@ public class Algos {
 						}
 					}
 				}
-				
+
 				if(found){
 					break;
 				}
@@ -466,7 +460,7 @@ public class Algos {
 		}
 		return count;
 	}
-	
+
 	/**
 	 * In-place split the right side of each FD in this set
 	 * @param fds a set of FD's
@@ -475,9 +469,7 @@ public class Algos {
 		Set<FuncDep> toRemove = new HashSet<>();
 		Set<FuncDep> toAdd = new HashSet<>();
 		for(FuncDep fd : fds){
-			//Set<Attribute> right = fd.getRight();
 			if(fd.right.size() > 1){
-				//Set<Attribute> left = fd.getLeft();
 				for(Attribute a : fd.right){
 					toAdd.add(new FuncDep.Builder().left(fd.left).right(a).build());
 				}
@@ -487,12 +479,12 @@ public class Algos {
 		fds.addAll(toAdd);
 		fds.removeAll(toRemove);
 	}
-	
+
 	/**
 	 * Compute all the superkeys (including candidate keys)
-	 * @param attrs a set of attributes 
+	 * @param attrs a set of attributes
 	 * @param fds a set of FD's
-	 * @return a set of superkeys, and each "superkey" is itself a set of attributes 
+	 * @return a set of superkeys, and each "superkey" is itself a set of attributes
 	 */
 	public static Set<Set<Attribute>> superKeys(Set<Attribute> attrs, Set<FuncDep> fds){
 		Set<Set<Attribute>> keys = new HashSet<>();
@@ -510,12 +502,9 @@ public class Algos {
 		}
 		return keys;
 	}
-	
+
 	private Algos(){
-		
+
 	}
-	
-	
-	
 
 }
