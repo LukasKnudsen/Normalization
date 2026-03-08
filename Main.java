@@ -13,11 +13,11 @@ public class Main {
         }
 
         // Step 2: Read functional dependencies
-        System.out.println("Enter functional dependencies (e.g. A-->B;C,D-->E):");
+        System.out.println("Enter functional dependencies (e.g. A->B;C,D->E):");
         String fdLine = scanner.nextLine();
         Set<FuncDep> fds = new HashSet<>();
         for (String fdString : fdLine.split(";")) {
-            String[] parts = fdString.split("-->");
+            String[] parts = fdString.split("->");
             if (parts.length != 2) continue;
 
             Set<Attribute> lhs = new HashSet<>();
