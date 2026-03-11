@@ -1,4 +1,4 @@
-Tool for 
+Tool for calculating normalization of db
 
 commands to run
 
